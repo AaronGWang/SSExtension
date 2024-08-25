@@ -1,0 +1,13 @@
+{
+  "name": "Test Extension",
+  "description": "This extension is just a test",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/testing.png"
+    }
+  },
+  "permissions": ["activeTab", "scripting"]
+}
