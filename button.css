@@ -1,0 +1,24 @@
+#summarize-button{
+  text-align: center;
+  color: white;
+  height: 30px;
+  width: 50%;
+  background: #009578;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 25%;
+  margin-bottom: 5px;
+}
+
+#summarize-button:hover{
+  background: #008168;
+}
+
+#summarize-button:active{
+  background: #006e58;
+}

@@ -9,5 +9,11 @@
       "16": "images/testing.png"
     }
   },
-  "permissions": ["activeTab", "scripting"]
+  "permissions": ["activeTab", "scripting"],
+  "web_accessible_resources": [
+        {
+            "resources": ["button.html", "button.css"],
+            "matches": ["<all_urls>"]
+        }
+    ]
 }
