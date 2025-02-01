@@ -6,7 +6,7 @@ checkWebsiteBtn.addEventListener('click', async () => {
   if(tab.url === "https://saschina.schoology.com/home") {
     chrome.scripting.executeScript({
       target: {tabId: tab.id},
-      function: addButton
+      function: addButtonAndExpandPosts
     });
   }
   else {
@@ -14,11 +14,16 @@ checkWebsiteBtn.addEventListener('click', async () => {
   }
 });
 
-function addButton() {
+function addButtonAndExpandPosts() {
   let feed = document.querySelector('ul.s-edge-feed');
   let updates = feed.querySelectorAll('li[id^="edge-assoc-"]');
+
   updates.forEach(li => {
     const buttonContainer = document.createElement('div');
+    const showMoreButton = li.querySelector('a[class^="show-more"]');
+    if (showMoreButton) {
+      showMoreButton.click();
+    }
     
     fetch(chrome.runtime.getURL('button.html'))
         .then(response => response.text())
