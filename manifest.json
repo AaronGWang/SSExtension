@@ -1,32 +1,16 @@
 {
-  "name": "Test Extension",
-  "description": "This extension is just a test",
-  "version": "1.0",
   "manifest_version": 3,
-
+  "name": "Schoology Summarizer",
+  "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
   "action": {
-    "default_icon": {
-      "16": "images/testing.png"
-    },
     "default_popup": "popup.html"
   },
-
-  "permissions": ["tabs", "sidePanel", "activeTab", "scripting"],
-
-  "host_permissions": ["<all_urls>"],
-
   "background": {
     "service_worker": "background.js"
-  },
-
-  "side_panel": {
-    "default_path": "sidepanel/index.html"
-  },
-
-  "web_accessible_resources": [
-        {
-            "resources": ["sidepanel/button.html", "sidepanel/button.css"],
-            "matches": ["<all_urls>"]
-        }
-    ]
+  }
 }
