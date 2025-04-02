@@ -1,16 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Schoology Summarizer",
+  "name": "Setup Extension",
   "version": "1.0",
   "permissions": [
     "activeTab",
-    "scripting",
     "tabs"
   ],
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "background": {
-    "service_worker": "background.js"
-  }
+  "content_scripts": [{
+    "matches": ["https://saschina.schoology.com/home"],
+    "js": ["content.js"]
+  }]
 }
