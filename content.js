@@ -1,9 +1,45 @@
+const feedContainer = document.getElementById("home-feed-container");
+const summaryDisplay = document.createElement("div");
+
+summaryDisplay.style.position = "sticky";
+summaryDisplay.style.whiteSpace = "pre-wrap";
+summaryDisplay.style.backgroundColor = "white";
+summaryDisplay.style.border = "2px solid #ccc";
+summaryDisplay.style.borderRadius = "8px";
+summaryDisplay.style.boxShadow = "0 4px 8px rgba(200, 200, 200, 0.5)";
+summaryDisplay.style.padding = "20px";
+summaryDisplay.style.marginBottom = "20px";
+summaryDisplay.style.fontFamily = "Arial, sans-serif";
+summaryDisplay.style.fontSize = "16px";
+
+feedContainer.parentNode.insertBefore(summaryDisplay, feedContainer);
+
+let dotCount = 0;
+const baseText = '<h2>AI Summary:</h2> <br> Loading';
+
+let loadingInterval = setInterval(() => {
+  dotCount = (dotCount + 1) % 4; // 0 to 3 dots
+  summaryDisplay.innerHTML = baseText + '.'.repeat(dotCount);
+}, 500);
+
+
 setTimeout(() => {
   let feed = document.querySelector('ul.s-edge-feed');
-  if (!feed) return;
-
   let showMoreButtons = Array.from(feed.querySelectorAll('a[class*="show-more"]'));
 
+  if (!feed) {
+    clearInterval(loadingInterval);
+    summaryDisplay.textContent = 'Failed to load page. Try to refresh.';
+    return;
+  }
+
+  if (showMoreButtons.length === 0) {
+    clearInterval(loadingInterval);
+    summaryDisplay.textContent = 'Error when loading page. Try to refresh.';
+    return;
+  }
+
+  // --------
   function clickNext(index) {
     if (index >= showMoreButtons.length) {
       let text = "";
@@ -23,19 +59,25 @@ setTimeout(() => {
         text += `${updates[i].innerText.trim()}\n\n--------\n\n`;
       }
 
-      const defaut_prompt = "Give me a summary of the following anouncements. Cut each anouncement down to 50 words or less. Organize them in the format of Author | Source | Anouncement. Order them from most important to least important. Ommit bolding and titles in your response.\n\n";
+      const defaut_prompt = "Give me a summary of the following anouncements. Cut each anouncement down to 50 words or less. Organize them in the format of Author | Source | Anouncement. Order them from most important to least important.\n\n";
 
       const prompt = defaut_prompt + text;
 
       chrome.runtime.sendMessage({ type: "SEND_PROMPT", prompt }, (response) => {
         if (response.result) {
-          console.log(response.result);
+          clearInterval(loadingInterval); // stop the animation
+          let summary = response.result
+          const summaryContent = summary.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+          summaryDisplay.innerHTML = summaryContent;
+
         } else {
           console.error("[!] Error [!]", response.error);
         }
       });
+
       return;
     };
+    // --------
 
     let button = showMoreButtons[index];
     if (button) {

@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         messages: [{ role: "user", content: message.prompt }],
       })
     })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
       sendResponse({ result: data.choices[0].message.content });
     })
