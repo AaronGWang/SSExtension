@@ -23,7 +23,17 @@ setTimeout(() => {
         text += `${updates[i].innerText.trim()}\n\n--------\n\n`;
       }
 
-      console.log(text)
+      const defaut_prompt = "Give me a summary of the following anouncements. Cut each anouncement down to 50 words or less. Organize them in the format of Author | Source | Anouncement. Order them from most important to least important. Ommit bolding and titles in your response.\n\n";
+
+      const prompt = defaut_prompt + text;
+
+      chrome.runtime.sendMessage({ type: "SEND_PROMPT", prompt }, (response) => {
+        if (response.result) {
+          console.log(response.result);
+        } else {
+          console.error("[!] Error [!]", response.error);
+        }
+      });
       return;
     };
 
