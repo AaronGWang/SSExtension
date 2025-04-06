@@ -1,3 +1,4 @@
+// Initialization and injection of summary display block
 const feedContainer = document.getElementById("home-feed-container");
 const summaryDisplay = document.createElement("div");
 
@@ -14,6 +15,7 @@ summaryDisplay.style.fontSize = "16px";
 
 feedContainer.parentNode.insertBefore(summaryDisplay, feedContainer);
 
+// Loading animation before the summary is ready
 let dotCount = 0;
 const baseText = '<h2>AI Summary:</h2> <br> Loading';
 
@@ -22,11 +24,12 @@ let loadingInterval = setInterval(() => {
   summaryDisplay.innerHTML = baseText + '.'.repeat(dotCount);
 }, 500);
 
-
+// Initial delay to allow the page to load
 setTimeout(() => {
   let feed = document.querySelector('ul.s-edge-feed');
   let showMoreButtons = Array.from(feed.querySelectorAll('a[class*="show-more"]'));
 
+  // Check if the feed is loaded (display errors if updates don't load fast enough)
   if (!feed) {
     clearInterval(loadingInterval);
     summaryDisplay.textContent = 'Failed to load page. Try to refresh.';
@@ -39,9 +42,13 @@ setTimeout(() => {
     return;
   }
 
-  // --------
+  // Expand all updates
   function clickNext(index) {
+
+    // Main function block after all updates have been expanded and page is loaded
     if (index >= showMoreButtons.length) {
+
+      // Scrape updates, authors, sources, and organize into desired format
       let text = "";
       let updates = document.querySelectorAll('span[class^="update-body"]');
 
@@ -49,7 +56,7 @@ setTimeout(() => {
       let sources = Array.from(updateInners).map(div => div.querySelectorAll('a[class^="sExtlink-processed"]'));
 
       for (let i = 0; i < updates.length; i++) {
-        if (sources[i].length >= 2) { // Ensure at least 2 <a> tags exist
+        if (sources[i].length >= 2) {
           text += `Author: ${sources[i][0].innerText}\n`;
           text += `Source: ${sources[i][1].innerText}\n\n`;
         } else {
@@ -59,26 +66,37 @@ setTimeout(() => {
         text += `${updates[i].innerText.trim()}\n\n--------\n\n`;
       }
 
-      const defaut_prompt = "Give me a summary of the following anouncements. Cut each anouncement down to 50 words or less. Organize them in the format of Author | Source | Anouncement. Order them from most important to least important.\n\n";
+      // Retrieve user config from popup.js and popup.html
+      chrome.storage.local.get(["summaryLengthConfig", "omitConfig"], (result) => {
+        let summaryLength = result.summaryLengthConfig || "50 words";
+        let omitText = result.omitConfig || "";
+      
+        // Set default instructions for the AI along with user config
+        let default_prompt = `Give me a summary of the following announcements. Cut each announcement down to ${summaryLength} or less. Organize them in the format of "#. **Author | Source |** Announcement". Order them from most important to least important.${omitText}\n\n`;
+        
+        //console.log(default_prompt);
+      
+        const prompt = default_prompt + text;
 
-      const prompt = defaut_prompt + text;
-
-      chrome.runtime.sendMessage({ type: "SEND_PROMPT", prompt }, (response) => {
-        if (response.result) {
-          clearInterval(loadingInterval); // stop the animation
-          let summary = response.result
-          const summaryContent = summary.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-          summaryDisplay.innerHTML = summaryContent;
-
-        } else {
-          console.error("[!] Error [!]", response.error);
-        }
+        // Send the prompt to the background script and API
+        chrome.runtime.sendMessage({ type: "SEND_PROMPT", prompt }, (response) => {
+          if (response.result) {
+            clearInterval(loadingInterval); // stop the animation
+            let summary = response.result;
+            const summaryContent = summary.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+            summaryDisplay.innerHTML = summaryContent;
+  
+          } else {
+            console.error("[!] Error [!]", response.error);
+          }
+        });
       });
 
       return;
     };
     // --------
 
+    // Expand individual posts by clicking the show more buttons
     let button = showMoreButtons[index];
     if (button) {
       button.click();
@@ -87,5 +105,6 @@ setTimeout(() => {
     setTimeout(() => clickNext(index + 1), 750); // Best interval delay time is 0.75 sec
   }
 
+  // Begin expanding by starting with the first show more button and incrementing
   clickNext(0);
 }, 1500); // Best initial delay time is 1.5 sec
