@@ -1,5 +1,5 @@
 // Initialize API information
-const apiKey = "OPENAI_API_KEY"
+const apiKey = "OPENAI_API_KEY";
 const apiUrl = "https://api.openai.com/v1/chat/completions";
 
 // Recieve message from content.js
