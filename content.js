@@ -76,7 +76,7 @@ setTimeout(() => {
         // Set default instructions for the AI along with user config
         let default_prompt = `Give me a summary of the following announcements. Cut each announcement down to ${summaryLength} or less. Organize them in the format of "#. **Author | Source |** Announcement". Summarize ${updateCount}${omitSportsText}.\n\n`;
         
-        console.log(default_prompt);
+        // console.log(default_prompt);
       
         const prompt = default_prompt + text;
 
