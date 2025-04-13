@@ -15,7 +15,8 @@ summaryDisplay.style.fontSize = "16px";
 
 feedContainer.parentNode.insertBefore(summaryDisplay, feedContainer);
 
-// Loading animation before the summary is ready
+// Loading animation & disclaimer
+const disclaimerMessage = "<h2>NOTE: This is a AI summary and doesn't have all the information from the original announcements. Make sure to check important anouncements on top of reading the summary.</h2><br>";
 let dotCount = 0;
 const baseText = '<h2>AI Summary:</h2> <br> Loading';
 
@@ -67,14 +68,15 @@ setTimeout(() => {
       }
 
       // Retrieve user config from popup.js and popup.html
-      chrome.storage.local.get(["summaryLengthConfig", "omitConfig"], (result) => {
+      chrome.storage.local.get(["summaryLengthConfig", "updateCountConfig", "omitSportsConfig"], (result) => {
         let summaryLength = result.summaryLengthConfig || "50 words";
-        let omitText = result.omitConfig || "";
+        let updateCount = result.updateCountConfig || "the first 5 updates";
+        let omitSportsText = result.omitSportsConfig || "";
       
         // Set default instructions for the AI along with user config
-        let default_prompt = `Give me a summary of the following announcements. Cut each announcement down to ${summaryLength} or less. Organize them in the format of "#. **Author | Source |** Announcement". Order them from most important to least important.${omitText}\n\n`;
+        let default_prompt = `Give me a summary of the following announcements. Cut each announcement down to ${summaryLength} or less. Organize them in the format of "#. **Author | Source |** Announcement". Summarize ${updateCount}${omitSportsText}.\n\n`;
         
-        //console.log(default_prompt);
+        console.log(default_prompt);
       
         const prompt = default_prompt + text;
 
@@ -82,9 +84,16 @@ setTimeout(() => {
         chrome.runtime.sendMessage({ type: "SEND_PROMPT", prompt }, (response) => {
           if (response.result) {
             clearInterval(loadingInterval); // stop the animation
+
             let summary = response.result;
             const summaryContent = summary.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-            summaryDisplay.innerHTML = summaryContent;
+            summaryDisplay.innerHTML = disclaimerMessage + summaryContent;
+
+            const disclaimerElement = summaryDisplay.querySelector('h2');
+            if (disclaimerElement) {
+              disclaimerElement.style.color = "red";
+              disclaimerElement.style.fontWeight = "bold";
+            }
   
           } else {
             console.error("[!] Error [!]", response.error);
@@ -102,7 +111,7 @@ setTimeout(() => {
       button.click();
     }
 
-    setTimeout(() => clickNext(index + 1), 750); // Best interval delay time is 0.75 sec
+    setTimeout(() => clickNext(index + 1), 700); // Best interval delay time is 0.75 sec
   }
 
   // Begin expanding by starting with the first show more button and incrementing

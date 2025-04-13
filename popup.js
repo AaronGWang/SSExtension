@@ -1,47 +1,73 @@
 // Get elements from popup.html
-const slider = document.getElementById('levelSlider');
-const checkbox = document.getElementById('omitCheckbox');
+const lengthSlider = document.getElementById('lengthSlider');
+const updateNumberSlider = document.getElementById('updateNumberSlider');
+const omitSportsCheckbox = document.getElementById('omitSportsCheckbox');
 
-// Set values for slider and checkbox to keep config saved
-chrome.storage.sync.get(['sliderValue', 'checkboxChecked'], function(data) {
-  if (data.sliderValue !== undefined) {
-    slider.value = data.sliderValue;
+// Load stored values
+chrome.storage.sync.get(['lengthSliderValue', 'updateNumberValue', 'omitSportsCheckboxChecked'], function(data) {
+  if (data.lengthSliderValue !== undefined) {
+    lengthSlider.value = data.lengthSliderValue;
   }
-  if (data.checkboxChecked !== undefined) {
-    checkbox.checked = data.checkboxChecked;
+  if (data.updateNumberValue !== undefined) {
+    updateNumberSlider.value = data.updateNumberValue;
+  }
+  if (data.omitSportsCheckboxChecked !== undefined) {
+    omitSportsCheckbox.checked = data.omitSportsCheckboxChecked;
   }
 });
 
-// Update values for slider and checkbox when changed by user and save to local storage
-slider.addEventListener('input', function() {
-  let summaryLength = "";
-  const level = slider.value;
+// Save length slider value and update summary length config
+lengthSlider.addEventListener('input', function () {
+  let summaryLengthText = "";
+  const level = lengthSlider.value;
 
   if (level == 0) {
-    summaryLength = "25 words";
+    summaryLengthText = "25 words";
   }
   if (level == 1) {
-    summaryLength = "50 words";
+    summaryLengthText = "50 words";
   }
   if (level == 2) {
-    summaryLength = "75 words";
+    summaryLengthText = "75 words";
   }
 
-  chrome.storage.sync.set({ sliderValue: slider.value });
-  chrome.storage.local.set({ summaryLengthConfig: summaryLength });
+  chrome.storage.sync.set({ lengthSliderValue: lengthSlider.value });
+  chrome.storage.local.set({ summaryLengthConfig: summaryLengthText });
 });
 
-checkbox.addEventListener('change', function() {
+// Save update number slider value
+updateNumberSlider.addEventListener('input', function () {
+  let updateNumberText = "";
+  const updateNumber = updateNumberSlider.value;
+
+  if (updateNumber == 0) {
+    updateNumberText = "the first 3 updates";
+  }
+  if (updateNumber == 1) {
+    updateNumberText = "the first 5 updates";
+  }
+  if (updateNumber == 2) {
+    updateNumberText = "the first 7 updates";
+  }
+  if (updateNumber == 3) {
+    updateNumberText = "all updates";
+  }
+
+  chrome.storage.sync.set({ updateNumberValue: updateNumberSlider.value });
+  chrome.storage.local.set({ updateCountConfig: updateNumberText });
+});
+
+// Save checkbox state and update omit config
+omitSportsCheckbox.addEventListener('change', function () {
   let omitText = "";
-  const omit = checkbox.checked;
+  const omit = omitSportsCheckbox.checked;
 
   if (omit) {
-    omitText = " Omit summary of updates about sports achievements.";
-  }
-  else {
+    omitText = " not including updates about sports achievements";
+  } else {
     omitText = "";
   }
 
-  chrome.storage.sync.set({ checkboxChecked: checkbox.checked });
-  chrome.storage.local.set({ omitConfig: omitText });
+  chrome.storage.sync.set({ omitSportsCheckboxChecked: omitSportsCheckbox.checked });
+  chrome.storage.local.set({ omitSportsConfig: omitText });
 });

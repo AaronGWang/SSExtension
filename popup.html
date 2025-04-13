@@ -4,84 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Schoology Summarizer Extension</title>
-  <style>
-    body {
-      background-color: #f5f5f5;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 15px;
-      min-width: 250px;
-    }
-
-    .container {
-      background-color: white;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(200, 200, 200, 0.5);
-      padding: 20px;
-      font-size: 16px;
-    }
-
-    .label {
-      margin-bottom: 8px;
-      display: block;
-      font-weight: bold;
-    }
-
-    .slider-container {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      margin: 10px 0;
-    }
-
-    .slider-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      margin-top: -5px;
-    }
-
-    .checkbox {
-      margin-top: 20px;
-    }
-
-    .checkbox label {
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+  <link rel="stylesheet" href="popup.css">
 </head>
 
 <body>
   <div class="container">
-    <label class="label" for="levelSlider">Summary Length:</label>
+    <h2 id="extensionTitle">Preferences:</h2>
+
+    <!-- Length Slider -->
+    <label class="label" for="lengthSlider">Summary Length:</label>
     <div class="slider-container">
-
-      <input type="range" min="0" max="2" value="1" step="1" id="levelSlider"/>
-
+      <input type="range" min="0" max="2" value="1" step="1" id="lengthSlider"/>
       <div class="slider-labels">
         <span>Minimal</span>
         <span>Short</span>
         <span>Medium</span>
       </div>
-
     </div>
 
+    <!-- Update Number Slider -->
+    <label class="label" for="updateNumberSlider">Number of Updates:</label>
+    <div class="slider-container">
+      <input type="range" min="0" max="3" value="2" step="1" id="updateNumberSlider"/>
+      <div class="slider-labels">
+        <span>3</span>
+        <span>5</span>
+        <span>7</span>
+        <span>All</span>
+      </div>
+    </div>
+
+    <!-- Checkbox -->
     <div class="checkbox">
-
-      <input type="checkbox" id="omitCheckbox"/>
-      <label for="omitCheckbox">Omit Sports Summaries</label>
-
+      <input type="checkbox" id="omitSportsCheckbox"/>
+      <label for="omitSportsCheckbox">Omit Sports Summaries</label>
     </div>
   </div>
 
   <script src="popup.js"></script>
 </body>
 </html>
-
-
