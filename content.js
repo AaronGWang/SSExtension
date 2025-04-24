@@ -16,7 +16,7 @@ summaryDisplay.style.fontSize = "16px";
 feedContainer.parentNode.insertBefore(summaryDisplay, feedContainer);
 
 // Loading animation & disclaimer
-const disclaimerMessage = "<h2>NOTE: This is a AI summary and doesn't have all the information from the original announcements. Make sure to check important anouncements on top of reading the summary.</h2><br>";
+const disclaimerMessage = "<h2>NOTE: This is an AI summary and doesn't have all the information from the original announcements. Make sure to check important anouncements on top of reading the summary.</h2><br>";
 let dotCount = 0;
 const baseText = '<h2>AI Summary:</h2> <br> Loading';
 
@@ -111,7 +111,7 @@ setTimeout(() => {
       button.click();
     }
 
-    setTimeout(() => clickNext(index + 1), 700); // Best interval delay time is 0.75 sec
+    setTimeout(() => clickNext(index + 1), 750); // Best interval delay time is 0.75 sec
   }
 
   // Begin expanding by starting with the first show more button and incrementing
